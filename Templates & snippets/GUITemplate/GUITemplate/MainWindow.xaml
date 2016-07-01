@@ -1,0 +1,46 @@
+﻿<metro:MetroWindow x:Class="GUITemplate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GUITemplate"
+        xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        Height="600" 
+        Width="1200"
+        MinHeight="600"
+        MinWidth="1200"
+        ResizeMode="CanResizeWithGrip"
+        RightWindowCommandsOverlayBehavior="HiddenTitleBar"
+        SaveWindowPosition="False"
+        WindowStartupLocation="CenterScreen"
+        ShowTitleBar="True"
+        ShowIconOnTitleBar="True"
+        ShowCloseButton="True"
+        ShowMaxRestoreButton="True"
+        ShowMinButton="True"
+        ShowSystemMenuOnRightClick="False"
+        ShowInTaskbar="True"
+        ShowActivated="True"
+        TitleCaps="False"
+        TitleAlignment="Left"
+        Name="Root"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        WindowTransitionsEnabled="True"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        NonActiveGlowBrush="{DynamicResource DisabledMenuItemForeground}">
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Fontawesome.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+    <Grid>
+        
+    </Grid>
+</metro:MetroWindow>
