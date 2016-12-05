@@ -1,0 +1,107 @@
+﻿<metro:MetroWindow x:Class="SerialRecorder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SerialRecorder"
+        xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Serial Recorder" 
+        Height="600" 
+        Width="1200"
+        MinHeight="600"
+        MinWidth="1200"
+        ResizeMode="CanResizeWithGrip"
+        RightWindowCommandsOverlayBehavior="HiddenTitleBar"
+        SaveWindowPosition="False"
+        WindowStartupLocation="CenterScreen"
+        ShowTitleBar="True"
+        ShowIconOnTitleBar="True"
+        ShowCloseButton="True"
+        ShowMaxRestoreButton="True"
+        ShowMinButton="True"
+        ShowSystemMenuOnRightClick="False"
+        ShowInTaskbar="True"
+        ShowActivated="True"
+        TitleCharacterCasing="Normal"
+        TitleAlignment="Left"
+        Name="Root"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        WindowTransitionsEnabled="True"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        NonActiveGlowBrush="{DynamicResource DisabledMenuItemForeground}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Fontawesome.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Margin="10">
+            <Label Content="Baud rate:" Margin="0,0,10,0" FontSize="16" VerticalContentAlignment="Center" />
+            <ComboBox Width="120" HorizontalContentAlignment="Center" ToolTip="Baud rate" ItemsSource="{Binding BaudRates, Mode=OneTime}" SelectedValue="{Binding SelectedBaudrate, Mode=OneWayToSource}" SelectedIndex="6" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" Margin="10">
+            <Label Content="Serial port:" Margin="0,0,10,0" FontSize="16" VerticalContentAlignment="Center" />
+            <ComboBox Width="120" HorizontalContentAlignment="Center" ToolTip="Serial port" ItemsSource="{Binding SerialPortNames, Mode=OneTime}" SelectedValue="{Binding SelectedSerialPort, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="0">
+            <Button Click="Connect_OnClick" Margin="10" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Width="140" ToolTip="Connect to selected COM port" IsEnabled="{Binding CanConnect}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource fa_plug}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" Text="CONNECT" />
+                </StackPanel>
+            </Button>
+            <Button Click="Disconnect_OnClick"  Margin="10" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Width="140" ToolTip="Disconnect from serial port" IsEnabled="{Binding IsConnected}">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource fa_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" Text="DISCONNECT" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <Separator Margin="10,0,10,0" Height="2" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1" />
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <material:Card Width="600" Height="360" Margin="0,0,60,0">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Log" FontSize="24" FontWeight="Light" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" BorderThickness="0,0,0,1" BorderBrush="Gray" />
+                    <TextBlock Text="{Binding DisplayLogText, Mode=OneWay}" Margin="10,10,10,5" />
+                </StackPanel>
+            </material:Card>
+            <material:Card Width="360" Height="360">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Status" FontSize="24" FontWeight="Light" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" BorderThickness="0,0,0,1" BorderBrush="Gray" />
+                    <Label Content="{Binding DisplayTime, Mode=OneWay}" FontSize="36" HorizontalAlignment="Center" Margin="10" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource AccentColorBrush}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Drops: " Margin="10" FontSize="14" />
+                        <Label Content="{Binding Drops}" Margin="0,10,10,10" FontSize="14" />
+                        <Button Content="Increment" Style="{DynamicResource MaterialDesignFlatButton}" Width="120" HorizontalAlignment="Right" Click="IncrementDrops_OnClick" />
+                    </StackPanel>
+                </StackPanel>
+            </material:Card>
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>
