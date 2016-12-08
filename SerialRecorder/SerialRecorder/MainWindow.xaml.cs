@@ -7,8 +7,6 @@ using System.IO;
 using MahApps.Metro.Controls;
 using System.IO.Ports;
 using System.Linq;
-using System.Management;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,40 +27,48 @@ namespace SerialRecorder
 
         public bool IsConnected => this._serialPort != null && this._serialPort.IsOpen;
 
-        private string _selectedSerialPort = SerialPort.GetPortNames().FirstOrDefault();
-
-        public ConcurrentStack<string> Log = new ConcurrentStack<string>();
         
+
+        private ConcurrentStack<string> _log = new ConcurrentStack<string>();
+
+        private Task LogTask;
+
         public Stopwatch Timer = new Stopwatch();
 
         public string DisplayTime => this.Timer.Elapsed.ToString("mm\\:ss\\.fff");
 
-        private Task LogTask;
-
-        private int _drops = 0;
-
-        public int Drops
-        {
-            get { return this._drops; }
-            set { this._drops = value; }
-        }
+        
 
         public string DisplayLogText
         {
             get
             {
-                if (this.Log.IsEmpty)
+                if (this._log.IsEmpty)
                 {
                     return string.Empty;
                 }
                 StringBuilder builder = new StringBuilder();
-                foreach (string line in this.Log.Reverse().Skip(Math.Max(0, this.Log.Count - 20)))
+                foreach (string line in this._log.Reverse().Skip(Math.Max(0, this._log.Count - 20)))
                 {
                     builder.AppendLine(line);
                 }
                 return builder.ToString();
             }
         }
+
+        private int _drops = 0;
+
+        public int Drops
+        {
+            get { return this._drops; }
+            set
+            {
+                this._drops = value;
+                this.OnPropertyChanged(nameof(this.Drops));
+            }
+        }
+
+        private string _selectedSerialPort = SerialPort.GetPortNames().FirstOrDefault();
 
         public string SelectedSerialPort
         {
@@ -91,6 +97,7 @@ namespace SerialRecorder
             this.Timer.Start();
             this._serialPort = new SerialPort(this.SelectedSerialPort, this._selectedBaudrate);
             this._serialPort.Open();
+
             this.LogTask = Task.Factory.StartNew(delegate
             {
                 StreamWriter writer = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DateTime.Now.ToFileTime() + ".txt"));
@@ -114,13 +121,14 @@ namespace SerialRecorder
                     Debug.WriteLine(text);
                     writer.WriteLine(text);
                     writer.Flush();
-                    this.Log.Push(text);
-                    this.OnPropertyChanged(nameof(this.Log));
+                    this._log.Push(text);
+                    this.OnPropertyChanged(nameof(this._log));
                     this.OnPropertyChanged(nameof(this.DisplayLogText));
                 }
                 writer.Close();
                 writer.Dispose();
             });
+
             this.OnPropertyChanged(nameof(this.IsConnected));
             this.OnPropertyChanged(nameof(this.CanConnect));
         }
@@ -129,18 +137,16 @@ namespace SerialRecorder
         {
             this.Timer.Stop();
             this.Timer.Reset();
+
             this._serialPort.Close();
             this._serialPort.Dispose();
             this._serialPort = null;
+
+            this._log = new ConcurrentStack<string>();
+            this.Drops = 0;
+
             this.OnPropertyChanged(nameof(this.IsConnected));
             this.OnPropertyChanged(nameof(this.CanConnect));
-            this.Log = new ConcurrentStack<string>();
-        }
-
-        private void IncrementDrops_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.Drops++;
-            this.OnPropertyChanged(nameof(this.Drops));
         }
 
         public MainWindow()
@@ -149,12 +155,14 @@ namespace SerialRecorder
 
             this.Loaded += delegate(object sender, RoutedEventArgs args)
             {
+                // Display timer force update
                 Task.Factory.StartNew(delegate
                 {
+                    Random rand = new Random(DateTime.Now.Millisecond);
                     while (true)
                     {
                         this.OnPropertyChanged(nameof(this.DisplayTime));
-                        Thread.Sleep(100);
+                        Thread.Sleep(50);
                     }
                 });
             };

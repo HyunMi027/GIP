@@ -87,18 +87,18 @@
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <material:Card Width="600" Height="360" Margin="0,0,60,0">
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Log" FontSize="24" FontWeight="Light" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" BorderThickness="0,0,0,1" BorderBrush="Gray" />
-                    <TextBlock Text="{Binding DisplayLogText, Mode=OneWay}" Margin="10,10,10,5" />
+                    <Label Content="Serial log" FontSize="24" FontWeight="Light" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" BorderThickness="0,0,0,1" BorderBrush="Gray" />
+                    <TextBlock Text="{Binding DisplayLogText, Mode=OneWay}" Margin="15,10,10,5" />
                 </StackPanel>
             </material:Card>
             <material:Card Width="360" Height="360">
                 <StackPanel Orientation="Vertical">
                     <Label Content="Status" FontSize="24" FontWeight="Light" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" BorderThickness="0,0,0,1" BorderBrush="Gray" />
                     <Label Content="{Binding DisplayTime, Mode=OneWay}" FontSize="36" HorizontalAlignment="Center" Margin="10" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource AccentColorBrush}" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label Content="Drops: " Margin="10" FontSize="14" />
-                        <Label Content="{Binding Drops}" Margin="0,10,10,10" FontSize="14" />
-                        <Button Content="Increment" Style="{DynamicResource MaterialDesignFlatButton}" Width="120" HorizontalAlignment="Right" Click="IncrementDrops_OnClick" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                        <Label Content="Drops:" Margin="0,0,10,0" FontSize="14" />
+                        <metro:NumericUpDown Width="100" Height="30" ButtonsAlignment="Right" HideUpDownButtons="False" UpDownButtonsWidth="20" HasDecimals="False" InterceptArrowKeys="True" InterceptMouseWheel="False" InterceptManualEnter="True" Interval="1" IsEnabled="{Binding IsConnected}" Minimum="0" Maximum="20000" Value="{Binding Drops, Mode=TwoWay}" Speedup="False" TrackMouseWheelWhenMouseOver="True" HorizontalContentAlignment="Center">
+                        </metro:NumericUpDown>
                     </StackPanel>
                 </StackPanel>
             </material:Card>
